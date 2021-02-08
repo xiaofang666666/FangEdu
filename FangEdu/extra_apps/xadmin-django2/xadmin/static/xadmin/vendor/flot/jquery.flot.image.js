@@ -65,7 +65,7 @@ Google Maps).
 
     $.plot.image = {};
 
-    $.plot.image.loadDataImages = function (series, options, callback) {
+    $.plot.org.loadDataImages = function (series, options, callback) {
         var urls = [], points = [];
 
         var defaultShow = options.series.images.show;
@@ -85,7 +85,7 @@ Google Maps).
             });
         });
 
-        $.plot.image.load(urls, function (loadedImages) {
+        $.plot.org.load(urls, function (loadedImages) {
             $.each(points, function (i, p) {
                 var url = p[0];
                 if (loadedImages[url])
@@ -96,7 +96,7 @@ Google Maps).
         });
     }
     
-    $.plot.image.load = function (urls, callback) {
+    $.plot.org.load = function (urls, callback) {
         var missing = urls.length, loaded = {};
         if (missing == 0)
             callback({});
@@ -235,7 +235,7 @@ Google Maps).
     $.plot.plugins.push({
         init: init,
         options: options,
-        name: 'image',
+        name: 'org.png',
         version: '1.1'
     });
 })(jQuery);

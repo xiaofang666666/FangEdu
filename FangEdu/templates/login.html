@@ -17,7 +17,7 @@
             <p class="fl hd-tips">谷粒教育在线网，在线学习平台！</p>
             <ul class="fr hd-bar">
                 <li>服务电话：<span>88888888</span></li>
-                <li class="active"><a href="login.html">[登录]</a></li>
+                <li class="active"><a href="{% url 'users:user_login' %}">[登录]</a></li>
                 <li><a href="register.html">[注册]</a></li>
             </ul>
         </div>
@@ -57,10 +57,10 @@
                     <div class="error btns login-form-tips" id="jsLoginTips">
                         {{ msg }}
                     </div>
-                     <div class="auto-box marb38">
+                    <div class="auto-box marb38">
 
-                        <a class="fr" href="forgetpwd.html">忘记密码？</a>
-                     </div>
+                        <a class="fr" href="{% url 'users:user_forget' %}">忘记密码？</a>
+                    </div>
                      <input class="btn btn-green" id="jsLoginBtn" type="submit" value="立即登录 > " />
                 </form>
                 <p class="form-p">没有谷粒教育在线网帐号？<a href="register.html">[立即注册]</a></p>

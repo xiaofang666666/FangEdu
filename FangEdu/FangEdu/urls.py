@@ -17,6 +17,8 @@ Including another URLconf
 from django.conf.urls import url, include
 import xadmin
 from users.views import index
+from django.conf import settings
+from django.conf.urls.static import static
 #from django.urls import path
 
 urlpatterns = [
@@ -28,4 +30,4 @@ urlpatterns = [
     url(r'^operations/', include(('operations.urls', 'operations'), namespace='operations')),
     url(r'^$',index, name='index'),
     #url(r'users/', include(('users.urls', 'users'))),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
