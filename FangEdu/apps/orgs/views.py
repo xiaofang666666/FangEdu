@@ -33,7 +33,7 @@ def org_list(request):
     except EmptyPage:
         pages = pa.page(pa.num_pages)
 
-    return render(request,'org-list.html',{
+    return render(request, 'org-list.html', {
         'all_orgs': all_orgs,
         'pages': pages,
         'all_citys': all_citys,

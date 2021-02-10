@@ -105,20 +105,19 @@
                 <div class="head">我要学习</div>
                 <form class="rightform" id="jsStayForm">
                     <div>
-                        <img src="../images/rightform1.png"/>
+                        <img src="{% static 'images/rightform1.png' %}"/>
                         <input type="text" name="name" id="companyName" placeholder="名字" maxlength="25" />
                     </div>
                     <div>
-                        <img src="../images/rightform2.png"/>
+                        <img src="{% static 'images/rightform2.png' %}"/>
                         <input type="text" name="mobile" id="companyMobile" placeholder="联系电话"/>
                     </div>
                     <div>
-                        <img src="../images/rightform3.png"/>
+                        <img src="{% static 'images/rightform3.png' %}"/>
                         <input type="text" name="course_name" id="companyAddress" placeholder="课程名" maxlength="50" />
                     </div>
                     <p class="error company-tips" id="jsCompanyTips"></p>
-                    <input class="btn" type="text" id="jsStayBtn" value="立即咨询 >" />
-                <input type='hidden' name='csrfmiddlewaretoken' value='5I2SlleZJOMUX9QbwYLUIAOshdrdpRcy' />
+                    <input class="btn" type="submit" id="jsStayBtn" value="立即咨询 >" />
                 </form>
             </div>
 
@@ -136,4 +135,40 @@
 		</div>
     </div>
 </section>
+{% endblock %}
+
+{% block myjs %}
+    <script>
+        $(function () {
+            $('#jsStayBtn').click(function () {
+                {#如果拿的是非表单元素的值，用text(),如果是表单元素，用val()#}
+                var name = $('#companyName').val();
+                var phone = $('#companyMobile').val();
+                var course = $('#companyAddress').val();
+                $.ajax({
+                    type:'POST',
+                    url:'{% url 'operations:user_ask' %}',
+                    data:{
+                        "name":name,
+                        "phone":phone,
+                        "course":course,
+                        "csrfmiddlewaretoken":'{{ csrf_token }}'
+                    },
+                    success:function (callback) {
+                        if(callback.status == 'ok'){
+                            alert(callback.msg)
+                            $('#companyName').val('');
+                            $('#companyMobile').val('');
+                            $('#companyAddress').val('');
+                        }else {
+                            alert(callback.msg)
+                            $('#jsCompanyTips').text(callback.msg)
+                        }
+                    }
+                });
+                {#如果不想让submit有提交的动作，那么就需要在时间函数的最后返回false，阻止提交动作#}
+                return false;
+            })
+        })
+    </script>
 {% endblock %}
