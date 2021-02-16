@@ -79,3 +79,24 @@ def course_video(request,course_id):
             'course': course,
             'course_list': course_list
         })
+
+
+def course_comment(request, course_id):
+    course = CourseInfo.objects.filter(id=int(course_id))[0]
+    all_comment = course.usercomment_set.all()[:10]
+
+    # 上过该课的同学还学过什么课程
+    # 第一步：我们需要从中间表用户课程表中找到学过该课的所有对象
+    usercourse_list = UserCourse.objects.filter(study_course=course)
+    # 第二步：根据找到的用户学习课程列表遍历拿到所有学习过这门课程的用户列表
+    user_list = [usercourse.study_man for usercourse in usercourse_list]
+    # 第三步：再根据找到的用户，从中间学习课程表中，找到所有用户学习其它课程的整个对象,并去除当前课程
+    usercourse_list = UserCourse.objects.filter(study_man__in=user_list).exclude(study_course=course)
+    # 第四步：从获取到的用户课程列表中拿到我们需要的其它课程
+    course_list = [usercourse.study_course for usercourse in usercourse_list]
+
+    return render(request, 'courses/course-comment.html', {
+        'course': course,
+        'all_comment': all_comment,
+        'course_list': course_list,
+    })

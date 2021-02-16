@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from .forms import UserAskForm
+from .forms import UserAskForm, UserCommentForm
 #from .models import UserAsk
 from django.http import JsonResponse
-from .models import UserLove
+from .models import UserLove, UserComment
 
 # Create your views here.
 def user_ask(request):
@@ -52,3 +52,18 @@ def user_love(request):
             return JsonResponse({'status': 'ok', 'msg': '取消收藏'})
     else:
         return JsonResponse({'status': 'ok', 'msg': '收藏失败'})
+
+
+def user_comment(request):
+    user_comment_form = UserCommentForm(request.POST)
+    if user_comment_form.is_valid():
+        course = user_comment_form.cleaned_data['course']
+        content = user_comment_form.cleaned_data['content']
+        a = UserComment()
+        a.comment_man = request.user
+        a.comment_content = content
+        a.comment_course_id = course
+        a.save()
+        return JsonResponse({'status': 'ok', 'msg': '评论成功'})
+    else:
+        return JsonResponse({'status': 'fail', 'msg': '评论失败'})
