@@ -18,7 +18,7 @@
 <body>
 <section class="headerwrap ">
     <header>
-		<div  class=" header">
+		<div  class=" header2 header">
  			<div class="top">
 				<div class="wp">
 					<div class="fl"><p>服务电话：<b>8888888</b></p></div>
@@ -77,10 +77,10 @@
                     <div class="nav">
                         <div class="wp">
                             <ul>
-                                <li class="active" ><a href="index.html">首页</a></li>
+                                <li class="active" ><a href="{% url 'index' %}">首页</a></li>
                                 <li >
-                                    <a href="course-list.html">
-                                        公开课<img class="hot" src="../images/nav_hot.png">
+                                    <a href="{% url 'courses:course_list' %}">
+                                        公开课<img class="hot" src="{% static 'images/nav_hot.png' %}">
                                     </a>
                                 </li>
                                 <li >

@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url
 #from django.urls import path
+from .views import course_list
 
 urlpatterns = [
+    url(r'^course_list/$', course_list, name='course_list')
 ]
