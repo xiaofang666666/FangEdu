@@ -45,9 +45,12 @@ def org_list(request):
     })
 
 
-def org_detail(request,org_id):
+def org_detail(request, org_id):
     if org_id:
-        org = OrgInfo.objects.filter(id = int(org_id))[0]
+        org = OrgInfo.objects.filter(id=int(org_id))[0]
+
+        org.click_num += 1
+        org.save()
 
         # 在返回页面数据时，需要返回收藏这个机构的状态，根据状态让模板页面显示收藏还是取消收藏
         lovestatus = False
@@ -59,7 +62,7 @@ def org_detail(request,org_id):
         return render(request, 'orgs/org-detail-homepage.html', {
             'org': org,
             'detail_type': 'home',
-            'lovestatus':lovestatus
+            'lovestatus': lovestatus
         })
 
 
@@ -92,9 +95,9 @@ def org_detail_course(request,org_id):
         })
 
 
-def org_detail_desc(request,org_id):
+def org_detail_desc(request, org_id):
     if org_id:
-        org = OrgInfo.objects.filter(id = int(org_id))[0]
+        org = OrgInfo.objects.filter(id=int(org_id))[0]
 
         # 在返回页面数据时，需要返回收藏这个机构的状态，根据状态让模板页面显示收藏还是取消收藏
         lovestatus = False
@@ -159,6 +162,9 @@ def teacher_detail(request, teacher_id):
         all_teachers = TeacherInfo.objects.all()
         teacher = TeacherInfo.objects.filter(id=int(teacher_id))[0]
         sort_teachers = all_teachers.order_by('-love_num')[:2]
+
+        teacher.click_num += 1
+        teacher.save()
 
         # lovecourse和loveorg用来存储用户收藏这个东西的状态，在模板当中根据这个状态来确定页面加载时显示的时收藏还是取消收藏
         loveteacher = False

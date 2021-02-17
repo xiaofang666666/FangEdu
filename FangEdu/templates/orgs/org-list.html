@@ -75,7 +75,7 @@
                             <li class="c8" style="padding-left:18px;">{{ org.address }}</li>
                             <li class="pic10" style="padding-left:18px;">经典课程：
                                     {% for course in org.courseinfo_set.all|slice:":2" %}
-                                        <a href="/diary/19/">{{ course.name }}</a>
+                                        <a href="{% url 'courses:course_detail' course.id %}">{{ course.name }}</a>
                                     {% endfor %}
                             </li>
                         </ul>

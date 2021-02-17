@@ -34,6 +34,10 @@ def course_detail(request, course_id):
     if course_id:
         course = CourseInfo.objects.filter(id=int(course_id))[0]
         relate_courses = CourseInfo.objects.filter(catagory=course.catagory).exclude(id=int(course_id))[:2]
+
+        course.click_num += 1
+        course.save()
+
         #lovecourse和loveorg用来存储用户收藏这个东西的状态，在模板当中根据这个状态来确定页面加载时显示的时收藏还是取消收藏
         lovecourse = False
         loveorg = False
@@ -64,6 +68,18 @@ def course_video(request,course_id):
             a.study_man = request.user
             a.study_course = course
             a.save()
+            course.study_num += 1
+            course.save()
+
+            # 第一步：从学习课程的表中查找当前这个人学习的所有课程
+            usercourse_list = UserCourse.objects.filter(study_man=request.user)
+            course_list = [usercourse.study_course for usercourse in usercourse_list]
+            # 第二步：根据拿到的所有课程，找到每个课程的机构
+            org_list = list(set([course.orginfo for course in course_list]))
+
+            if course.orginfo not in org_list:
+                course.orginfo.study_num += 1
+                course.orginfo.save()
 
         # 学过该课的同学还学过什么课程
         # 第一步：我们需要从中间表用户课程表中找到学过该科的所有对象

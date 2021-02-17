@@ -3,6 +3,9 @@ from .forms import UserAskForm, UserCommentForm
 #from .models import UserAsk
 from django.http import JsonResponse
 from .models import UserLove, UserComment
+from orgs.models import OrgInfo, TeacherInfo
+from courses.models import CourseInfo
+from django.core.serializers import serialize
 
 # Create your views here.
 def user_ask(request):
@@ -27,6 +30,14 @@ def user_love(request):
     loveid = request.GET.get('loveid', '')
     lovetype = request.GET.get('lovetype', '')
     if loveid and lovetype:
+        # 根据传递过来的收藏类型，判断是什么对象，根据传过来的收藏id，判断收藏的是哪一个对象
+        obj = None
+        if int(lovetype) == 1:
+            obj = OrgInfo.objects.filter(id=int(loveid))[0]
+        if int(lovetype) == 2:
+            obj = CourseInfo.objects.filter(id=int(loveid))[0]
+        if int(lovetype) == 3:
+            obj = TeacherInfo.objects.filter(id=int(loveid))[0]
         #如果收藏的id和type同时存在，那么我们首先要去收藏表当中去查找有没有这个收藏记录
         love = UserLove.objects.filter(love_id=int(loveid), love_type=int(lovetype), love_man=request.user)
         if love:
@@ -35,11 +46,15 @@ def user_love(request):
             if love[0].love_status:
                 love[0].love_status = False
                 love[0].save()
+                obj.love_num -=1
+                obj.save()
                 return JsonResponse({'status': 'ok', 'msg': '收藏'})
             # 如果收藏状态为假，代表之前收藏过，并且又取消了收藏，并且现在页面上应显示的是收藏，代表着这次点击是为了收藏
             else:
                 love[0].love_status = True
                 love[0].save()
+                obj.love_num += 1
+                obj.save()
                 return JsonResponse({'status': 'ok', 'msg': '取消收藏'})
         else:
             #如果之前没有收藏过这个东西，那么代表表当中没有这个记录，我们需要创建这个记录对象，然后把这个记录的状态改为true
@@ -49,6 +64,8 @@ def user_love(request):
             a.love_type = int(lovetype)
             a.love_status = True
             a.save()
+            obj.love_num += 1
+            obj.save()
             return JsonResponse({'status': 'ok', 'msg': '取消收藏'})
     else:
         return JsonResponse({'status': 'ok', 'msg': '收藏失败'})
