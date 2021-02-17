@@ -126,3 +126,54 @@ def org_detail_teacher(request,org_id):
             'detail_type': 'teacher',
             'lovestatus': lovestatus
         })
+
+
+def teacher_list(request):
+    all_teachers = TeacherInfo.objects.all()
+    sort_teachers = all_teachers.order_by('-love_num')[:2]
+
+    sort = request.GET.get('sort','')
+    if sort:
+        all_teachers = all_teachers.order_by('-'+sort)
+
+    # 分页功能
+    pagenum = request.GET.get('pagenum', '')
+    pa = Paginator(all_teachers, 2)
+    try:
+        pages = pa.page(pagenum)
+    except PageNotAnInteger:
+        pages = pa.page(1)
+    except EmptyPage:
+        pages = pa.page(pa.num_pages)
+
+    return render(request, 'orgs/teachers-list.html', {
+        'all_teachers': all_teachers,
+        'sort_teachers': sort_teachers,
+        'pages': pages,
+        'sort': sort,
+    })
+
+
+def teacher_detail(request, teacher_id):
+    if teacher_id:
+        all_teachers = TeacherInfo.objects.all()
+        teacher = TeacherInfo.objects.filter(id=int(teacher_id))[0]
+        sort_teachers = all_teachers.order_by('-love_num')[:2]
+
+        # lovecourse和loveorg用来存储用户收藏这个东西的状态，在模板当中根据这个状态来确定页面加载时显示的时收藏还是取消收藏
+        loveteacher = False
+        loveorg = False
+        if request.user.is_authenticated:
+            love = UserLove.objects.filter(love_id=int(teacher_id), love_type=3, love_status=True, love_man=request.user)
+            if love:
+                loveteacher = True
+            love = UserLove.objects.filter(love_id=teacher.work_company.id, love_type=1, love_status=True,love_man=request.user)
+            if love:
+                loveorg = True
+
+        return render(request, 'orgs/teacher-detail.html', {
+            'teacher': teacher,
+            'sort_teachers': sort_teachers,
+            'loveteacher': loveteacher,
+            'loveorg': loveorg
+        })
