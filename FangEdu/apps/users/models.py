@@ -16,14 +16,19 @@ class UserProfile(AbstractUser):
     def __str__(self):
         return self.username
 
+    def get_msg_counter(self):
+        from operations.models import UserMessage
+        counter = UserMessage.objects.filter(message_man=self.id, message_status=False).count()
+        return counter
+
     class Meta:
         verbose_name = '用户信息'
         verbose_name_plural = verbose_name
 
 
 class BannerInfo(models.Model):
-    image = models.ImageField(upload_to='banner/',verbose_name="轮播图片",max_length=200)
-    url = models.URLField(default='http://www.atguigu.com',max_length=200,verbose_name="图片连接")
+    image = models.ImageField(upload_to='banner/', verbose_name="轮播图片", max_length=200)
+    url = models.URLField(default='http://www.atguigu.com', max_length=200, verbose_name="图片连接")
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     def __str__(self):

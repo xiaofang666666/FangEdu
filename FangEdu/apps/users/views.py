@@ -6,6 +6,9 @@ from django.contrib.auth import authenticate,logout,login
 from tools.send_mail_tool import send_email_code
 from django.http import JsonResponse
 from datetime import datetime
+from operations.models import UserLove, UserMessage
+from orgs.models import OrgInfo, TeacherInfo
+from courses.models import CourseInfo
 
 
 # Create your views here.
@@ -58,6 +61,11 @@ def user_login(request):
             user = authenticate(username=email, password=password)
             if user:
                 login(request, user)
+                #当登录成功时，加入一条消息
+                a = UserMessage()
+                a.message_man = user.id
+                a.message_content = '欢迎登录'
+                a.save()
                 return redirect(reverse('index'))
                 if user.is_start:
                     login(request, user)
@@ -238,3 +246,57 @@ def user_resetemail(request):
             return JsonResponse({'status': 'fail', 'msg': '邮箱或验证码有误'})
     else:
         return JsonResponse({'status': 'fail', 'msg': '邮箱或验证码不合法'})
+
+
+def user_course(request):
+    usercourse_list = request.user.usercourse_set.all()
+    course_list = [usercourse.study_course for usercourse in usercourse_list]
+    return render(request, 'users/usercenter-mycourse.html', {
+        'course_list': course_list
+    })
+
+
+def user_loveorg(request):
+    # userloveorg_list = request.user.userlove_set.all().filter(love_type=1)#方法1
+    userloveorg_list = UserLove.objects.filter(love_man=request.user, love_type=1, love_status=True)#方法2
+    org_ids = [userloveorg.love_id for userloveorg in userloveorg_list]
+    org_list = OrgInfo.objects.filter(id__in=org_ids)
+    return render(request, 'users/usercenter-fav-org.html', {
+        'org_list': org_list,
+    })
+
+
+def user_loveteacher(request):
+    userloveteacher_list = UserLove.objects.filter(love_man=request.user, love_type=3, love_status=True)
+    teacher_ids = [userloveteacher.love_id for userloveteacher in userloveteacher_list]
+    teacher_list = TeacherInfo.objects.filter(id__in=teacher_ids)
+    return render(request, 'users/usercenter-fav-teacher.html', {
+        'teacher_list': teacher_list,
+    })
+
+
+def user_lovecourse(request):
+    userlovecourse_list = UserLove.objects.filter(love_man=request.user, love_type=2, love_status=True)
+    course_ids = [userlovecourse.love_id for userlovecourse in userlovecourse_list]
+    course_list = CourseInfo.objects.filter(id__in=course_ids)
+    return render(request, 'users/usercenter-fav-course.html', {
+        'course_list': course_list,
+    })
+
+
+def user_message(request):
+    msg_list = UserMessage.objects.filter(message_man=request.user.id)
+    return render(request, 'users/usercenter-message.html', {
+        'msg_list': msg_list
+    })
+
+
+def user_deletemessage(request):
+    delete_id = request.GET.get('delete_id', '')
+    if delete_id:
+        msg = UserMessage.objects.filter(id=int(delete_id))[0]
+        msg.message_status = True
+        msg.save()
+        return JsonResponse({'status': 'ok', 'msg': '已读'})
+    else:
+        return JsonResponse({'status': 'fail', 'msg': '读取失败'})

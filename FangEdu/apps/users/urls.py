@@ -14,7 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from .views import user_register, user_login, user_logout, user_active, user_forget, user_reset, user_info, user_changeimage, user_changeinfo, user_changeemail, user_resetemail
+from .views import user_register, user_login, user_logout, user_active, user_forget, user_reset, user_info, user_changeimage, user_changeinfo, \
+    user_changeemail, user_resetemail, user_course, user_loveorg, user_loveteacher, user_lovecourse, user_message, user_deletemessage
 
 urlpatterns = [
     url(r'^user_register/$',user_register, name='user_register'),
@@ -30,4 +31,11 @@ urlpatterns = [
     url(r'^user_changeinfo/$', user_changeinfo, name='user_changeinfo'),
     url(r'^user_changeemail/$', user_changeemail, name='user_changeemail'),
     url(r'^user_resetemail/$', user_resetemail, name='user_resetemail'),
+    url(r'^user_course/$', user_course, name='user_course'),
+    url(r'^user_loveorg/$', user_loveorg, name='user_loveorg'),
+    url(r'^user_loveteacher/$', user_loveteacher, name='user_loveteacher'),
+    url(r'^user_lovecourse/$', user_lovecourse, name='user_lovecourse'),
+
+    url(r'^user_message/$', user_message, name='user_message'),
+    url(r'^user_deletemessage/$', user_deletemessage, name='user_deletemessage'),
 ]
