@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse
 from .forms import UserRegisterForm, UserLoginForm, UserForgetForm, UserResetForm, UserChangeImageForm, UserChangeInfoForm, UserChangeEmailForm, UserResetEmailForm
-from .models import UserProfile, EmailVerifyCode
+from .models import UserProfile, EmailVerifyCode, BannerInfo
 from django.db.models import Q
 from django.contrib.auth import authenticate,logout,login
 from tools.send_mail_tool import send_email_code
@@ -13,7 +13,16 @@ from courses.models import CourseInfo
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    all_banners = BannerInfo.objects.all().order_by('-add_time')[:5]
+    banner_courses = CourseInfo.objects.filter(is_banner=True)[:3]
+    all_courses = CourseInfo.objects.filter(is_banner=False)[:6]
+    all_orgs = OrgInfo.objects.all()[:15]
+    return render(request, 'index.html', {
+        'all_banners': all_banners,
+        'banner_courses': banner_courses,
+        'all_courses': all_courses,
+        'all_orgs': all_orgs,
+    })
 
 
 def user_register(request):
