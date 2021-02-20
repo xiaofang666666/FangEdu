@@ -2,11 +2,17 @@ from django.shortcuts import render
 from .models import CourseInfo
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from operations.models import UserLove, UserCourse
+from django.db.models import Q
 
 # Create your views here.
 def course_list(request):
     all_courses = CourseInfo.objects.all()
     recommend_courses = all_courses.order_by('-add_time')[:3]
+
+    # 全局搜索功能的过滤
+    keyword = request.GET.get('keyword', '')
+    if keyword:
+        all_courses = all_courses.filter(Q(name__icontains=keyword) | Q(desc__icontains=keyword) | Q(detail__icontains=keyword))
 
     sort = request.GET.get('sort', '')
     if sort:
@@ -26,7 +32,8 @@ def course_list(request):
         'all_courses': all_courses,
         'pages': pages,
         'recommend_courses': recommend_courses,
-        'sort': sort
+        'sort': sort,
+        'keyword': keyword,
     })
 
 

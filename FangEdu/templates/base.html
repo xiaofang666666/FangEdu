@@ -135,6 +135,27 @@
 <script src="{% static 'js/plugins/jquery.scrollLoading.js' %}"  type="text/javascript"></script>
 <script src="{% static 'js/deco-common.js' %}"  type="text/javascript"></script>
 <script type="text/javascript" src="{% static 'js/index.js' %}"></script>
+<script>
+    $(function () {
+        $('#jsSearchBtn').click(function () {
+            var search_type = $('#jsSelectOption').attr('data-value');
+            var key_word = $('#search_keywords').val();
+            var url = ''
+
+            if(search_type == 'org'){
+                url = '{% url 'orgs:org_list' %}'
+            }else if(search_type == 'teacher'){
+                url = '{% url 'orgs:teacher_list' %}'
+            }else {
+                url = '{% url 'courses:course_list' %}'
+            }
+
+            url = url + '?keyword=' + key_word
+
+            window.location.href = url
+        })
+    })
+</script>
 {% block myjs %}{% endblock %}
 </body>
 </html>

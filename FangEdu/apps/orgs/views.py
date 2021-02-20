@@ -2,12 +2,18 @@ from django.shortcuts import render
 from .models import OrgInfo, TeacherInfo, CityInfo
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from operations.models import UserLove
+from django.db.models import Q
 
 # Create your views here.
 def org_list(request):
     all_orgs = OrgInfo.objects.all()
     all_citys = CityInfo.objects.all()
     sort_orgs = all_orgs.order_by('-love_num')[:3]
+
+    #全局搜索功能的过滤
+    keyword = request.GET.get('keyword', '')
+    if keyword:
+        all_orgs = all_orgs.filter(Q(name__icontains=keyword)|Q(desc__icontains=keyword)|Q(detail__icontains=keyword))
 
     #按照机构类别进行过滤筛选
     cate = request.GET.get('cate', '')
@@ -42,6 +48,7 @@ def org_list(request):
         'cate': cate,
         'cityid': cityid,
         'sort': sort,
+        'keyword': keyword,
     })
 
 
@@ -135,6 +142,11 @@ def teacher_list(request):
     all_teachers = TeacherInfo.objects.all()
     sort_teachers = all_teachers.order_by('-love_num')[:2]
 
+    # 全局搜索功能的过滤
+    keyword = request.GET.get('keyword', '')
+    if keyword:
+        all_teachers = all_teachers.filter(name__icontains=keyword)
+
     sort = request.GET.get('sort','')
     if sort:
         all_teachers = all_teachers.order_by('-'+sort)
@@ -154,6 +166,7 @@ def teacher_list(request):
         'sort_teachers': sort_teachers,
         'pages': pages,
         'sort': sort,
+        'keyword': keyword
     })
 
 
