@@ -9,20 +9,24 @@ from datetime import datetime
 from operations.models import UserLove, UserMessage
 from orgs.models import OrgInfo, TeacherInfo
 from courses.models import CourseInfo
+from django.views.generic import View
 
 
 # Create your views here.
-def index(request):
-    all_banners = BannerInfo.objects.all().order_by('-add_time')[:5]
-    banner_courses = CourseInfo.objects.filter(is_banner=True)[:3]
-    all_courses = CourseInfo.objects.filter(is_banner=False)[:6]
-    all_orgs = OrgInfo.objects.all()[:15]
-    return render(request, 'index.html', {
-        'all_banners': all_banners,
-        'banner_courses': banner_courses,
-        'all_courses': all_courses,
-        'all_orgs': all_orgs,
-    })
+class IndexViex(View):
+    def get(self, request):
+        all_banners = BannerInfo.objects.all().order_by('-add_time')[:5]
+        banner_courses = CourseInfo.objects.filter(is_banner=True)[:3]
+        all_courses = CourseInfo.objects.filter(is_banner=False)[:6]
+        all_orgs = OrgInfo.objects.all()[:15]
+        return render(request, 'index.html', {
+            'all_banners': all_banners,
+            'banner_courses': banner_courses,
+            'all_courses': all_courses,
+            'all_orgs': all_orgs,
+        })
+
+
 
 
 def user_register(request):
@@ -58,10 +62,11 @@ def user_register(request):
             })
 
 
-def user_login(request):
-    if request.method == 'GET':
+class UserLoginView(View):
+    def get(self, request):
         return render(request, 'users/login.html')
-    else:
+
+    def post(self, request):
         user_login_form = UserLoginForm(request.POST)
         if user_login_form.is_valid():
             email = user_login_form.cleaned_data['email']
@@ -90,6 +95,11 @@ def user_login(request):
             return render(request, 'users/login.html', {
                 'user_login_form': user_login_form
             })
+
+
+# def user_login(request):
+#     if request.method == 'GET':
+#     else:
 
 
 def user_logout(request):

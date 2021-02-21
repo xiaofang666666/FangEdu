@@ -16,7 +16,7 @@ Including another URLconf
 #from django.contrib import admin
 from django.conf.urls import url, include
 import xadmin
-from users.views import index
+from users.views import IndexViex
 from django.conf import settings
 from django.conf.urls.static import static
 #from django.urls import path
@@ -28,6 +28,6 @@ urlpatterns = [
     url(r'^courses/', include(('courses.urls', 'courses'), namespace='courses')),
     url(r'^orgs/', include(('orgs.urls', 'orgs'), namespace='orgs')),
     url(r'^operations/', include(('operations.urls', 'operations'), namespace='operations')),
-    url(r'^$',index, name='index'),
+    url(r'^$',IndexViex.as_view(), name='index'),
     #url(r'users/', include(('users.urls', 'users'))),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
