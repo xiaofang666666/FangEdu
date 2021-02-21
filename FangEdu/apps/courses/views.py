@@ -3,6 +3,8 @@ from .models import CourseInfo
 from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 from operations.models import UserLove, UserCourse
 from django.db.models import Q
+#from django.contrib.auth.decorators import login_required
+from tools.decorations import login_decoration
 
 # Create your views here.
 def course_list(request):
@@ -62,7 +64,8 @@ def course_detail(request, course_id):
             'loveorg':loveorg
         })
 
-
+#@login_required(login_url='/users/user_login/')
+@login_decoration
 def course_video(request,course_id):
     if course_id:
         course = CourseInfo.objects.filter(id=int(course_id))[0]

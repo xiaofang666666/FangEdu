@@ -69,16 +69,17 @@ def user_login(request):
 
             user = authenticate(username=email, password=password)
             if user:
-                login(request, user)
-                #当登录成功时，加入一条消息
-                a = UserMessage()
-                a.message_man = user.id
-                a.message_content = '欢迎登录'
-                a.save()
-                return redirect(reverse('index'))
                 if user.is_start:
                     login(request, user)
-                    return redirect(reverse('index'))
+                    # 当登录成功时，加入一条消息
+                    a = UserMessage()
+                    a.message_man = user.id
+                    a.message_content = '欢迎登录'
+                    a.save()
+                    url = request.COOKIES.get('url', '/')
+                    ret = redirect(url)
+                    ret.delete_cookie('url')
+                    return ret
                 else:
                     return HttpResponse('请去您的邮箱激活，否则无法登录')
             else:

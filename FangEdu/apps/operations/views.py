@@ -6,6 +6,8 @@ from .models import UserLove, UserComment
 from orgs.models import OrgInfo, TeacherInfo
 from courses.models import CourseInfo
 from django.core.serializers import serialize
+from tools.decorations import login_decoration
+
 
 # Create your views here.
 def user_ask(request):
@@ -25,7 +27,7 @@ def user_ask(request):
     else:
         return JsonResponse({'status': 'fail', 'msg': '咨询失败'})
 
-
+@login_decoration
 def user_love(request):
     loveid = request.GET.get('loveid', '')
     lovetype = request.GET.get('lovetype', '')
