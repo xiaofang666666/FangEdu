@@ -7,6 +7,7 @@ class CityInfoXadmin(object):
 
 class OrgInfoXadmin(object):
     list_display = ['image', 'name', 'course_num', 'study_num', 'love_num', 'click_num', 'category', 'cityinfo']
+    style_fields = {'detail': 'ueditor'}
 
 
 class TeacherInfoXadmin(object):

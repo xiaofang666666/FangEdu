@@ -24,6 +24,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^captcha',include('captcha.urls')),
+    url(r'^ueditor/', include('DjangoUeditor.urls')),
     url(r'^users/', include(('users.urls', 'users'), namespace='users')),
     url(r'^courses/', include(('courses.urls', 'courses'), namespace='courses')),
     url(r'^orgs/', include(('orgs.urls', 'orgs'), namespace='orgs')),

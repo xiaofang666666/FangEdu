@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-from orgs.models import OrgInfo,TeacherInfo
+from orgs.models import OrgInfo, TeacherInfo
 
 # Create your models here.
 class CourseInfo(models.Model):

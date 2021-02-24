@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'reversion',
-    'captcha'
+    'captcha',
+    'DjangoUeditor'
 ]
 
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -151,3 +152,5 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = 'xiaofang20212021@163.com'
 EMAIL_HOST_PASSWORD = 'NICXBRKRCFQNZOHX'
 EMAIL_FROM = 'xiaofang20212021@163.com'
+
+sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
